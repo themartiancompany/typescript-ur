@@ -35,7 +35,7 @@ package() {
   ln -s ../lib/node_modules/$pkgname/bin/{tsc,tsserver} "$pkgdir"/usr/bin
 
   cd $_name-$pkgver
-  rsync -r --exclude .gitattributes README.md SECURITY.md bin lib package.json \
+  rsync -r --exclude=.gitattributes README.md SECURITY.md bin lib package.json \
     "$pkgdir"/usr/lib/node_modules/$pkgname
   install -Dt "$pkgdir"/usr/share/licenses/$pkgname ThirdPartyNoticeText.txt
 }
