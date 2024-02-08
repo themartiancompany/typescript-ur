@@ -35,7 +35,7 @@ _branch="main"
     'git'
   ) && \
   source+=(
-    "git+${_url}.git#tag=v${pkgver}"
+    "${_name}-${_branch}::git+${_url}.git#tag=v${pkgver}"
   ) && \
   b2sums+=(
     'SKIP'
@@ -45,19 +45,19 @@ _branch="main"
     "${_url}/archive/refs/heads/${_branch}.zip"
   ) && \
   b2sums+=(
-    'ciao'
+    'd08f0e3e8be315de11a1dfe135544e83e7a9bf7e9f5e16013b01ed4d29d9942d3e872a9168ef4a3dfc87e0e6343e8bc957d75fd7d9d1b30aaa9236a67dbb04b8'
   )
 
 prepare() {
   cd \
-    $_name
+    "${_name}-${_branch}"
   npm \
     ci
 }
 
 build() {
   cd \
-    $_name
+    "${_name}-${_branch}"
   npx \
     hereby \
       LKG
@@ -65,7 +65,7 @@ build() {
 
 check() {
   cd \
-    $_name
+    "${_name}-${_branch}"
   npm \
     run \
       test
@@ -82,7 +82,7 @@ package() {
     $mod_dir/bin/{tsc,tsserver} \
     "$pkgdir"/usr/bin
   cd \
-    $_name
+    "${_name}-${_branch}"
   rsync \
     -r \
     --exclude=.gitattributes \
