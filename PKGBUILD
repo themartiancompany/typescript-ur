@@ -21,6 +21,7 @@ depends=(
   'nodejs'
 )
 makedepends=(
+  'dprint'
   'npm'
   'rsync'
 )
