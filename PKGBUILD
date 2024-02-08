@@ -13,7 +13,7 @@ pkgver=5.3.3
 pkgrel=1
 pkgdesc='JavaScript with syntax for types'
 arch=('any')
-url=http://www.typescriptlang.org
+url="http://www.${pkgname}lang.org"
 license=(
   'Apache'
 )
@@ -42,7 +42,7 @@ _branch="main"
   )
 [[ "${_git}" == false ]] && \
   source+=(
-    "${url}/archive/refs/heads/${_branch}.zip"
+    "${_url}/archive/refs/heads/${_branch}.zip"
   ) && \
   b2sums+=(
     'ciao'
