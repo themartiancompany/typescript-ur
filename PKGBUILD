@@ -122,6 +122,7 @@ if [[ ! -v "_tag" ]]; then
   fi
 fi
 _tarname="${_pkg}-${_tag}"
+_tarfile="${_tarname}.${_archive_format}"
 if [[ "${_git}" == true ]]; then
   makedepends+=(
     'git'
@@ -142,10 +143,10 @@ elif [[ "${_git}" == false ]]; then
     _uri="${_url}/archive/refs/heads/${_branch}.zip"
   fi
   source+=(
-    "${_tarname}.${_archive_format}::${_uri}"
-  ) && \
+    "${_tarfile}::${_uri}"
+  )
   b2sums+=(
-    'd08f0e3e8be315de11a1dfe135544e83e7a9bf7e9f5e16013b01ed4d29d9942d3e872a9168ef4a3dfc87e0e6343e8bc957d75fd7d9d1b30aaa9236a67dbb04b8'
+    'boh'
   )
 fi
 
