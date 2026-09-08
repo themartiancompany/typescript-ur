@@ -1,24 +1,109 @@
 # SPDX-License-Identifier: AGPL-3.0
-#
-# Maintainer:  Pellegrino Prevete <cGVsbGVncmlub3ByZXZldGVAZ21haWwuY29tCg== | base -d>
-# Maintainer:  Truocolo <truocolo@aol.com>
-# Maintainer:  Felix Yan <felixonmars@archlinux.org>
-# Maintainer:  Daniel M. Capella <polyzen@archlinux.org>
-# Contributor: Bruno Galeotti <bgaleotti at gmail dot com>
 
-_git=false
-_name=TypeScript
-pkgname=typescript
+#    -----------------------------------------------------
+#    Copyright © 2024, 2025, 2026  Pellegrino Prevete
+#
+#    All rights reserved
+#    -----------------------------------------------------
+#
+#    This program is free software: you can redistribute
+#    it and/or modify it under the terms of the
+#    GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of
+#    the License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it
+#    will be useful, but WITHOUT ANY WARRANTY;
+#    without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#    See the GNU Affero General Public License for
+#    more details.
+#
+#    You should have received a copy of the
+#    GNU Affero General Public License
+#    along with this program.
+#    If not, see <https://www.gnu.org/licenses/>.
+
+# Maintainers:
+#   Truocolo
+#     <truocolo@aol.com>
+#     <truocolo@0x6E5163fC4BFc1511Dbe06bB605cc14a3e462332b>
+#   Pellegrino Prevete (dvorak)
+#     <pellegrinoprevete@gmail.com>
+#     <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
+# Contributors:
+#   Felix Yan
+#     <felixonmars@archlinux.org>
+#   Daniel M. Capella
+#     <polyzen@archlinux.org>
+#   Bruno Galeotti
+#     <bgaleotti at gmail dot com>
+
+_os="$(
+  uname \
+    -o)"
+_evmfs_available="$(
+  command \
+    -v \
+    "evmfs" || \
+    true)"
+if [[ ! -v "_evmfs" ]]; then
+  if [[ "${_evmfs_available}" != "" ]]; then
+    _evmfs="true"
+  elif [[ "${_evmfs_available}" == "" ]]; then
+    _evmfs="false"
+  fi
+fi
+if [[ ! -v "_offline" ]]; then
+  _offline="false"
+fi
+if [[ ! -v "_git" ]]; then
+  _git="false"
+fi
+if [[ ! -v "_git_service" ]]; then
+  _git_service="github"
+fi
+if [[ ! -v "_tag_name" ]]; then
+  _tag_name="commit"
+  if [[ "${_git}" == "false" ]]; then
+    _tag_name="tag"
+  fi
+fi
+if [[ ! -v "_archive_format" ]]; then
+  if [[ "${_git}" == "true" ]]; then
+    if [[ "${_evmfs}" == "true" ]]; then
+      _archive_format="bundle"
+    elif [[ "${_evmfs}" == "false" ]]; then
+      _archive_format="git"
+    fi
+  elif [[ "${_git}" == "false" ]]; then
+    if [[ "${_git_service}" == "github" ]]; then
+      _archive_format="zip"
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      _archive_format="tar.gz"
+    fi
+  fi
+fi
+_Pkg=TypeScript
+_pkg=typescript
+_name="${_Pkg}"
+_node="nodejs"
+pkgbase="${_pkg}"
+pkgname=(
+  "${_pkg}"
+)
 pkgver=5.3.3
 pkgrel=1
 pkgdesc='JavaScript with syntax for types'
-arch=('any')
-url="http://www.${pkgname}lang.org"
+arch=(
+  'any'
+)
+url="http://www.${_pkg}lang.org"
 license=(
   'Apache'
 )
 depends=(
-  'nodejs'
+  "${_node}"
 )
 makedepends=(
   'dprint'
@@ -27,27 +112,42 @@ makedepends=(
 )
 source=()
 b2sums=()
-_http="https://github.com"
+_http="https://${_git_service}.com"
 _ns="microsoft"
 _url="${_http}/${_ns}/${_name}"
 _branch="main"
-[[ "${_git}" == true ]] && \
+if [[ ! -v "_tag" ]]; then
+  if [[ "${_tag_name}" == "tag" ]]; then
+    _tag="v${pkgver}"
+  fi
+fi
+_tarname="${_pkg}-${_tag}"
+if [[ "${_git}" == true ]]; then
   makedepends+=(
     'git'
-  ) && \
+  )
+fi
+if [[ "${_git}" == true ]]; then
+  _uri="git+${_url}.git#${_tag_name}=${_tag}"
   source+=(
-    "${_name}-${_branch}::git+${_url}.git#tag=v${pkgver}"
-  ) && \
+    "${_tarname}::${_uri}"
+  )
   b2sums+=(
     'SKIP'
   )
-[[ "${_git}" == false ]] && \
+elif [[ "${_git}" == false ]]; then
+  if [[ "${_tag_name}" == "commit" ]]; then
+    _uri="${_url}/archive/${_commit}.${_archive_format}"
+  elif [[ "${_tag_name}" == "branch" ]]; then
+    _uri="${_url}/archive/refs/heads/${_branch}.zip"
+  fi
   source+=(
-    "${_url}/archive/refs/heads/${_branch}.zip"
+    "${_tarname}.${_archive_format}::${_uri}"
   ) && \
   b2sums+=(
     'd08f0e3e8be315de11a1dfe135544e83e7a9bf7e9f5e16013b01ed4d29d9942d3e872a9168ef4a3dfc87e0e6343e8bc957d75fd7d9d1b30aaa9236a67dbb04b8'
   )
+fi
 
 prepare() {
   cd \
@@ -61,7 +161,7 @@ build() {
     "${_name}-${_branch}"
   npx \
     hereby \
-      LKG
+      "LKG"
 }
 
 check() {
@@ -69,7 +169,7 @@ check() {
     "${_name}-${_branch}"
   npm \
     run \
-      test
+      "test"
 }
 
 package() {
