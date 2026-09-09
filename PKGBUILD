@@ -212,22 +212,22 @@ package() {
   install \
     -vdm755 \
     "${pkgdir}/usr/bin" \
-    "usr/lib/node_modules/${pkgname}"
+    "${pkgdir}/usr/lib/node_modules/${pkgname}"
   ln \
     -s \
     "${_mod_dir}/bin/"{"tsc","tsserver"} \
     "${pkgdir}/usr/bin"
   cd \
-    "${_tarname}"
-  rsync \
-    -r \
-    --exclude=".gitattributes" \
-    "README.md" \
-    "SECURITY.md" \
-    "bin" \
-    "lib" \
-    "package.json" \
     "${pkgdir}/usr/lib/node_modules/${pkgname}"
+  rsync \
+    -rv \
+    --exclude=".gitattributes" \
+    "${_tarname}/README.md" \
+    "${_tarname}/SECURITY.md" \
+    "${_tarname}/bin" \
+    "${_tarname}/lib" \
+    "package.json" \
+    "."
   install \
     -vDt \
     "${pkgdir}/usr/share/licenses/${pkgname}" \
