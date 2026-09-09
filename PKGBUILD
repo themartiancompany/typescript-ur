@@ -64,10 +64,10 @@ if [[ ! -v "_git_service" ]]; then
   _git_service="github"
 fi
 if [[ ! -v "_tag_name" ]]; then
-  _tag_name="commit"
   if [[ "${_git}" == "false" ]]; then
     _tag_name="tag"
   fi
+  _tag_name="commit"
 fi
 if [[ ! -v "_archive_format" ]]; then
   if [[ "${_git}" == "true" ]]; then
@@ -92,7 +92,8 @@ pkgbase="${_pkg}"
 pkgname=(
   "${_pkg}"
 )
-pkgver=5.3.3
+pkgver=5.8.3
+_commit="68cead182cc24afdc3f1ce7c8ff5853aba14b65a"
 pkgrel=1
 pkgdesc='JavaScript with syntax for types'
 arch=(
@@ -111,7 +112,7 @@ makedepends=(
   'rsync'
 )
 source=()
-b2sums=()
+sha256sums=()
 _http="https://${_git_service}.com"
 _ns="microsoft"
 _url="${_http}/${_ns}/${_name}"
@@ -133,7 +134,7 @@ if [[ "${_git}" == true ]]; then
   source+=(
     "${_tarname}::${_uri}"
   )
-  b2sums+=(
+  sha256sums+=(
     'SKIP'
   )
 elif [[ "${_git}" == false ]]; then
@@ -145,7 +146,7 @@ elif [[ "${_git}" == false ]]; then
   source+=(
     "${_tarfile}::${_uri}"
   )
-  b2sums+=(
+  sha256sums+=(
     'boh'
   )
 fi
