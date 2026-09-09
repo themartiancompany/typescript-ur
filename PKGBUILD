@@ -210,8 +210,9 @@ package() {
     _usr_get)"
   _mod_dir="${_usr}/lib/node_modules/${pkgname}"
   install \
-    -d \
-    "${pkgdir}/"{"usr/bin","usr/lib/node_modules${pkgname}"}
+    -vdm755 \
+    "${pkgdir}/usr/bin" \
+    "usr/lib/node_modules/${pkgname}"
   ln \
     -s \
     "${_mod_dir}/bin/"{"tsc","tsserver"} \
