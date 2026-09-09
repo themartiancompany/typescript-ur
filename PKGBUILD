@@ -94,7 +94,7 @@ pkgname=(
 )
 pkgver=5.8.3
 _commit="68cead182cc24afdc3f1ce7c8ff5853aba14b65a"
-pkgrel=1
+pkgrel=2
 pkgdesc='JavaScript with syntax for types'
 arch=(
   'any'
