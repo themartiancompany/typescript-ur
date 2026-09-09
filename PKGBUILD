@@ -94,11 +94,11 @@ pkgname=(
 )
 pkgver=5.8.3
 _commit="68cead182cc24afdc3f1ce7c8ff5853aba14b65a"
-pkgrel=8
+pkgrel=9
 pkgdesc='JavaScript with syntax for types'
 arch=(
   "aarch64"
-  'x86_64'
+  "x86_64"
 )
 url="http://www.${_pkg}lang.org"
 license=(
@@ -212,22 +212,24 @@ package() {
   install \
     -vdm755 \
     "${pkgdir}/usr/bin" \
+  install \
+    -vdm755 \
     "${pkgdir}/usr/lib/node_modules/${pkgname}"
   ln \
     -s \
     "${_mod_dir}/bin/"{"tsc","tsserver"} \
     "${pkgdir}/usr/bin"
   cd \
-    "${pkgdir}/usr/lib/node_modules/${pkgname}"
+    "${_tarname}"
   rsync \
     -rv \
     --exclude=".gitattributes" \
-    "${_tarname}/README.md" \
-    "${_tarname}/SECURITY.md" \
-    "${_tarname}/bin" \
-    "${_tarname}/lib" \
+    "README.md" \
+    "SECURITY.md" \
+    "bin" \
+    "lib" \
     "package.json" \
-    "."
+    "${pkgdir}/usr/lib/node_modules/${pkgname}"
   install \
     -vDt \
     "${pkgdir}/usr/share/licenses/${pkgname}" \
