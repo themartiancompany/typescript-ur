@@ -113,6 +113,8 @@ makedepends=(
 )
 source=()
 sha256sums=()
+_github_sum="0c8b8caf2aa399793e51ce27d8d5dd89d961433f181e775deaef3aacf00f2a10"
+_github_sig_sum="550793a161c52872dbb0792a601fae900307380c5adfa8f53747a0c9858bd63d"
 _http="https://${_git_service}.com"
 if [[ ! -v "_ns" ]]; then
   _ns="microsoft"
@@ -152,7 +154,7 @@ elif [[ "${_git}" == false ]]; then
     "${_tarfile}::${_uri}"
   )
   sha256sums+=(
-    'boh'
+    "${_github_sum}"
   )
 fi
 
