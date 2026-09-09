@@ -97,7 +97,8 @@ _commit="68cead182cc24afdc3f1ce7c8ff5853aba14b65a"
 pkgrel=4
 pkgdesc='JavaScript with syntax for types'
 arch=(
-  'any'
+  "aarch64"
+  'x86_64'
 )
 url="http://www.${_pkg}lang.org"
 license=(
