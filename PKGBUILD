@@ -114,12 +114,17 @@ makedepends=(
 source=()
 sha256sums=()
 _http="https://${_git_service}.com"
-_ns="microsoft"
+if [[ ! -v "_ns" ]]; then
+  _ns="microsoft"
+  _ns="themartiancompany"
+fi
 _url="${_http}/${_ns}/${_name}"
 _branch="main"
 if [[ ! -v "_tag" ]]; then
   if [[ "${_tag_name}" == "tag" ]]; then
     _tag="v${pkgver}"
+  elif [[ "${_tag_name}" == "commit" ]]; then
+    _tag="${_commit}"
   fi
 fi
 _tarname="${_pkg}-${_tag}"
