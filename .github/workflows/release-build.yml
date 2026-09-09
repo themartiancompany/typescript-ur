@@ -90,6 +90,7 @@ jobs:
         termux/termux-docker:${{ matrix.architecture }}
       volumes: 
         - /tmp/node20:/__e/node20
+        - /tmp/node20:/__e/node24
     # approximate environment variables for actions that can't be forced to use entrypoint.sh
     env:
       GH_TOKEN:
@@ -155,9 +156,15 @@ jobs:
           ln \
             -sf \
             "${PREFIX}/bin" \
-            "/__e/node20/bin"
+            "/__e/node20/bin" || \
+            true
+          ln \
+            -sf \
+            "${PREFIX}/bin" \
+            "/__e/node24/bin" || \
+            true
       - uses:
-          actions/checkout@v4.2.2
+          actions/checkout@v7.0.1
       - name:
           Fixes permissions of repository after actions/checkout, which ran as root user, while entrypoint.sh activates system user (1000).
         run: |
@@ -197,6 +204,10 @@ jobs:
           /entrypoint.sh \
             pip \
               install \
+                "hatchling"
+          /entrypoint.sh \
+            pip \
+              install \
                 "setuptools"
           /entrypoint.sh \
             pip \
@@ -210,6 +221,18 @@ jobs:
             pip \
               install \
                 "multidict"
+          /entrypoint.sh \
+            pip \
+              install \
+                "docutils"
+          /entrypoint.sh \
+            pip \
+              install \
+                "pygments"
+          /entrypoint.sh \
+            pip \
+              install \
+                "poetry-core"
       # - name:
       #     Installs Rust.
       #   run: |
@@ -281,6 +304,8 @@ jobs:
           /entrypoint.sh \
             pacman-key \
               --init
+          /entrypoint.sh \
+            pacman-db-upgrade
       - name:
           Installs 'build essential' ahah.
         run: |
@@ -1274,7 +1299,13 @@ jobs:
           ln \
             -sf \
             "${PREFIX}/bin" \
-            "/__e/node20/bin"
+            "/__e/node20/bin" || \
+            true
+          ln \
+            -sf \
+            "${PREFIX}/bin" \
+            "/__e/node24/bin" || \
+            true
       - name:
           Setups container.
         run: |
@@ -1288,10 +1319,13 @@ jobs:
             "python-docutils" \
             "python-pip" \
             "python-build" \
+            "python-poetry-core" \
             "tree" \
             "unzip"
       - uses:
-          actions/checkout@v4.2.2
+          actions/setup-node@v5
+      - uses:
+          actions/checkout@v7.0.1
       - name:
           Fixes executable bit for all binaries in "${PREFIX}/bin" for all users.
         run: |
@@ -1707,7 +1741,8 @@ jobs:
           pacman \
             -Rdd \
             --noconfirm \
-            "reallymakepkg"
+            "reallymakepkg" || \
+            true
           git \
             clone \
               --branch="main" \
@@ -1903,7 +1938,7 @@ jobs:
               true
           done
       - name:
-          Builds the Arch package.
+          Builds the GNU package.
         run: |
           _evmfs="false" \
           _git_service="github" \
@@ -1984,7 +2019,7 @@ jobs:
         id:
           version
       - name:
-          Uploads Arch package.
+          Uploads GNU package.
         uses:
           actions/upload-release-asset@v1
         env:
@@ -2240,7 +2275,9 @@ jobs:
                 "core.autocrlf" \
                 "false"
       - uses:
-          actions/checkout@v3
+          actions/setup-node@v5
+      - uses:
+          actions/checkout@v7.0.1
       - name:
           Installs recent EVM GNUPG.
         env:
@@ -2417,7 +2454,7 @@ jobs:
             "dogeos-windows-libassuan"*".pkg.tar."*
 
       - uses:
-          actions/checkout@v3
+          actions/checkout@v7.0.1
       - name:
           Builds the Windows package.
         run: |
@@ -2656,7 +2693,9 @@ jobs:
               install \
                 "setuptools"
       - uses:
-          actions/checkout@v3.3.0
+          actions/setup-node@v5
+      - uses:
+          actions/checkout@v7.0.1
       - name:
           Builds the package.
         run:
