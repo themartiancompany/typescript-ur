@@ -94,7 +94,7 @@ pkgname=(
 )
 pkgver=5.8.3
 _commit="68cead182cc24afdc3f1ce7c8ff5853aba14b65a"
-pkgrel=6
+pkgrel=7
 pkgdesc='JavaScript with syntax for types'
 arch=(
   "aarch64"
@@ -227,7 +227,7 @@ package() {
     "bin" \
     "lib" \
     "package.json" \
-    "${pkgdir}/usr/lib/node_modules${pkgname}"
+    "${pkgdir}/usr/lib/node_modules/${pkgname}"
   install \
     -vDt \
     "${pkgdir}/usr/share/licenses/${pkgname}" \
