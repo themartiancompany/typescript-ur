@@ -111,6 +111,19 @@ makedepends=(
   'npm'
   'rsync'
 )
+if [[ "${_git}" == true ]]; then
+  makedepends+=(
+    'git'
+  )
+fi
+if [[ "${_evmfs}" == true ]]; then
+  makedepends+=(
+    'evmfs'
+  )
+fi
+provides=(
+  "${_node}-${_pkg}=${pkgver}"
+)
 source=()
 sha256sums=()
 _github_sum="0c8b8caf2aa399793e51ce27d8d5dd89d961433f181e775deaef3aacf00f2a10"
@@ -131,11 +144,6 @@ if [[ ! -v "_tag" ]]; then
 fi
 _tarname="${_pkg}-${_tag}"
 _tarfile="${_tarname}.${_archive_format}"
-if [[ "${_git}" == true ]]; then
-  makedepends+=(
-    'git'
-  )
-fi
 if [[ "${_git}" == true ]]; then
   _uri="git+${_url}.git#${_tag_name}=${_tag}"
   source+=(
@@ -160,14 +168,14 @@ fi
 
 prepare() {
   cd \
-    "${_name}-${_branch}"
+    "${_tarname}"
   npm \
     ci
 }
 
 build() {
   cd \
-    "${_name}-${_branch}"
+    "${_tarname}"
   npx \
     hereby \
       "LKG"
@@ -175,37 +183,53 @@ build() {
 
 check() {
   cd \
-    "${_name}-${_branch}"
+    "${_tarname}"
   npm \
     run \
       "test"
 }
 
+_usr_get() {
+  local \
+    _bin
+  _bin="$(
+    dirname \
+      "$(command \
+           -v \
+	   "env")")"
+  dirname \
+    "${_bin}"
+}
+
 package() {
   local \
-    mod_dir=/usr/lib/node_modules/$pkgname
+    _mod_dir \
+    _usr
+  _usr="$(
+    _usr_get)"
+  _mod_dir="${_usr}/lib/node_modules/${pkgname}"
   install \
     -d \
-    "$pkgdir"/{usr/bin,$mod_dir}
+    "${pkgdir}/"{"usr/bin","usr/lib/node_modules${pkgname}"}
   ln \
     -s \
-    $mod_dir/bin/{tsc,tsserver} \
-    "$pkgdir"/usr/bin
+    "${_mod_dir}/bin/"{"tsc","tsserver"} \
+    "${pkgdir}/usr/bin"
   cd \
-    "${_name}-${_branch}"
+    "${_tarname}"
   rsync \
     -r \
-    --exclude=.gitattributes \
-    README.md \
-    SECURITY.md \
-    bin \
-    lib \
-    package.json \
-    "$pkgdir"/$mod_dir
+    --exclude=".gitattributes" \
+    "README.md" \
+    "SECURITY.md" \
+    "bin" \
+    "lib" \
+    "package.json" \
+    "${pkgdir}/usr/lib/node_modules${pkgname}"
   install \
-    -Dt \
-    "$pkgdir"/usr/share/licenses/$pkgname \
-    ThirdPartyNoticeText.txt
+    -vDt \
+    "${pkgdir}/usr/share/licenses/${pkgname}" \
+    "ThirdPartyNoticeText.txt"
 }
 
 # vim:set sw=2 sts=-1 et:
